@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  Copyright (c) [2022] OmniFaces and/or its affiliates. All rights reserved.
+ 
+  The contents of this file are subject to the terms of either the GNU
+  General Public License Version 2 only ("GPL") or the Common Development
+  and Distribution License("CDDL") (collectively, the "License").  You
+  may not use this file except in compliance with the License.  You can
+  obtain a copy of the License at
+  https://github.com/payara/Payara/blob/master/LICENSE.txt
+  See the License for the specific
+  language governing permissions and limitations under the License.
+ 
+  When distributing the software, include this License Header Notice in each
+  file and include the License file at glassfish/legal/LICENSE.txt.
+ 
+  GPL Classpath Exception:
+  The Payara Foundation designates this particular file as subject to the "Classpath"
+  exception as provided by the Payara Foundation in the GPL Version 2 section of the License
+  file that accompanied this code.
+ 
+  Modifications:
+  If applicable, add the following below the License Header, with the fields
+  enclosed by brackets [] replaced by your own identifying information:
+  "Portions Copyright [year] [name of copyright owner]"
+ 
+  Contributor(s):
+  If you wish your version of this file to be governed by only the CDDL or
+  only the GPL Version 2, indicate your decision by adding "[Contributor]
+  elects to include this software in this distribution under the [CDDL or GPL
+  Version 2] license."  If you don't indicate a single choice of license, a
+  recipient has the option to distribute your version of this file under
+  either the CDDL, the GPL Version 2 or to extend the choice of license to
+  its licensees as provided above.  However, if you add GPL Version 2 code
+  and therefore, elected the GPL Version 2 license, then the option applies
+  only if the new code is made subject to such option by the copyright
+  holder.
+ 
+ 
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.omnifaces</groupId>
+	<artifactId>omniconcurrent-parent</artifactId>
+	<version>3.0.0-RC1</version>
+	<packaging>pom</packaging>
+
+	<name>OmniConcurrent Parent</name>
+	<description>Partial implementation of Jakarta Concurrency for GlassFish</description>
+	<url>https://github.com/omnifaces/omniconcurrent</url>
+	<inceptionYear>2022</inceptionYear>
+	<organization>
+		<name>OmniFaces</name>
+		<url>https://omnifaces.org</url>
+	</organization>
+	<licenses>
+		<license>
+			 <name>CDDL + GPLv2 with classpath exception</name>
+            <url>http://glassfish.java.net/nonav/public/CDDL+GPL.html</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>arjan.tijms</id>
+			<name>Arjan Tijms</name>
+			<email>arjan.tijms@gmail.com</email>
+		</developer>
+	</developers>
+
+    <modules>
+        <module>concurrent-extras</module>
+        <module>concurrent-connector</module>
+        <module>concurrent-impl</module>
+    </modules>
+
+	<scm>
+		<url>https://github.com/omnifaces/omniconcurrent</url>
+		<connection>scm:git:git://github.com/omnifaces/omniconcurrent.git</connection>
+		<developerConnection>scm:git:git@github.com:omnifaces/omniconcurrent.git</developerConnection>
+	</scm>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<properties>
+		<!-- Essential Maven defaults. -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<maven.compiler.release>11</maven.compiler.release>
+
+		<glassfish.version>7.0.0-SNAPSHOT</glassfish.version>
+
+		<hk2.plugin.version>3.0.3</hk2.plugin.version>
+		<hk2.config-generator.version>2.5.0-b53</hk2.config-generator.version>
+		
+        <maven.test.jvmoptions.memory.sizes>-Xss512k -Xms256m -Xmx1g -XX:MaxDirectMemorySize=512m</maven.test.jvmoptions.memory.sizes>
+        <maven.test.jvmoptions.memory.gc>-verbose:gc -XX:+UseG1GC -XX:+UseStringDeduplication</maven.test.jvmoptions.memory.gc>
+        <maven.test.jvmoptions.display>-Djava.awt.headless=true</maven.test.jvmoptions.display>
+        <maven.test.jvmoptions.locale>-Duser.language=en -Duser.region=US</maven.test.jvmoptions.locale>
+        <maven.test.jvmoptions.add-opens>--add-opens java.base/java.lang=ALL-UNNAMED --add-opens=java.naming/javax.naming.spi=ALL-UNNAMED</maven.test.jvmoptions.add-opens>
+        <maven.test.jvmoptions.custom></maven.test.jvmoptions.custom>
+        <maven.test.jvmoptions>
+            ${maven.test.jvmoptions.memory.sizes}
+            ${maven.test.jvmoptions.memory.gc}
+            ${maven.test.jvmoptions.display}
+            ${maven.test.jvmoptions.locale}
+            ${maven.test.jvmoptions.add-opens}
+            ${maven.test.jvmoptions.custom}
+        </maven.test.jvmoptions>
+        <surefire.argLine>${maven.test.jvmoptions}</surefire.argLine>
+	</properties>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.glassfish.hk2</groupId>
+					<artifactId>config-generator</artifactId>
+					<version>${hk2.config-generator.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.glassfish.hk2</groupId>
+					<artifactId>hk2-inhabitant-generator</artifactId>
+					<version>${hk2.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.glassfish.hk2</groupId>
+					<artifactId>osgiversion-maven-plugin</artifactId>
+					<version>${hk2.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.glassfish.hk2</groupId>
+					<artifactId>consolidatedbundle-maven-plugin</artifactId>
+					<version>${hk2.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>3.0.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-bundle-plugin</artifactId>
+					<version>5.1.6</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.10.1</version>
+					<configuration>
+						<source>11</source>
+						<target>11</target>
+					</configuration>
+					<executions>
+						<execution>
+							<id>default-compile</id>
+							<phase>compile</phase>
+							<goals>
+								<goal>compile</goal>
+							</goals>
+							<configuration>
+								<proc>none</proc>
+							</configuration>
+						</execution>
+						<execution>
+							<id>process-annotations</id>
+							<phase>process-classes</phase>
+							<goals>
+								<goal>compile</goal>
+							</goals>
+							<configuration>
+								<proc>only</proc>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>3.3.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.glassfish.build</groupId>
+					<artifactId>glassfishbuild-maven-plugin</artifactId>
+					<version>3.2.27</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>3.4.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.2.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>3.2.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>3.0.0-M5</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>3.2.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.11.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>3.3.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>3.0.0-M2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>3.0.0-M1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.2.2</version>
+				</plugin>
+				<plugin>
+					<groupId>io.github.git-commit-id</groupId>
+					<artifactId>git-commit-id-maven-plugin</artifactId>
+					<version>5.0.0</version>
+					<executions>
+						<execution>
+							<id>get-the-git-infos</id>
+							<goals>
+								<goal>revision</goal>
+							</goals>
+							<phase>initialize</phase>
+						</execution>
+					</executions>
+					<configuration>
+						<includeOnlyProperties>
+							<includeOnlyProperty>git.branch</includeOnlyProperty>
+							<includeOnlyProperty>git.build.time</includeOnlyProperty>
+							<includeOnlyProperty>git.commit.id.abbrev</includeOnlyProperty>
+							<includeOnlyProperty>git.closest.tag.commit.count</includeOnlyProperty>
+						</includeOnlyProperties>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>enforce-maven</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>3.6.0</version>
+								</requireMavenVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.glassfish.build</groupId>
+				<artifactId>glassfishbuild-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<dir>${project.build.outputDirectory}</dir>
+				</configuration>
+				<executions>
+					<execution>
+						<id>echo</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>echo</goal>
+						</goals>
+						<configuration>
+							<message>Building in ${project.basedir} </message>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.glassfish.hk2</groupId>
+				<artifactId>config-generator</artifactId>
+				<version>2.5.0-b53</version>
+				<executions>
+					<execution>
+						<id>default-generate-test-injectors</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>generate-test-injectors</goal>
+						</goals>
+						<configuration>
+							<supportedProjectTypes>jar,glassfish-jar</supportedProjectTypes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>default-generate-injectors</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate-injectors</goal>
+						</goals>
+						<configuration>
+							<supportedProjectTypes>jar,glassfish-jar</supportedProjectTypes>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<supportedProjectTypes>jar,glassfish-jar</supportedProjectTypes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.glassfish.hk2</groupId>
+				<artifactId>hk2-inhabitant-generator</artifactId>
+				<configuration>
+					<supportedProjectTypes>jar,ejb,war,glassfish-jar</supportedProjectTypes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<excludeDependencies>tools-jar</excludeDependencies>
+					<niceManifest>true</niceManifest>
+					<supportedProjectTypes>
+						<supportedProjectType>glassfish-jar</supportedProjectType>
+						<supportedProjectType>jar</supportedProjectType>
+					</supportedProjectTypes>
+					<instructions>
+						<_include>-osgi.bundle</_include>
+						<_noimportjava>true</_noimportjava>
+						<_runee>JavaSE-11</_runee>
+					</instructions>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+                <groupId>org.glassfish.build</groupId>
+                <artifactId>command-security-maven-plugin</artifactId>
+                <version>1.0.14</version>
+                <configuration>
+                    <isFailureFatal>false</isFailureFatal>
+                </configuration>
+            </plugin>
+
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-manifest</id>
+						<phase>test</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<echo level="info">Generating manifest for
+									${project.build.outputDirectory}/META-INF for
+									${project.artifactId}</echo>
+								<echo file="${basedir}/target/MANIFEST.MF">Manifest-Version: 1.0</echo>
+								<copy toDir="${project.build.outputDirectory}/META-INF"
+									overwrite="false">
+									<fileset dir="${basedir}/target" includes="MANIFEST.MF">
+										<present
+											targetdir="${project.build.outputDirectory}/META-INF"
+											present="srconly" />
+									</fileset>
+								</copy>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M6</version>
+                <configuration>
+                    <argLine>${surefire.argLine}</argLine>
+                    <trimStackTrace>false</trimStackTrace>
+                    <useSystemClassLoader>true</useSystemClassLoader>
+                    <forkCount>1</forkCount>
+                    <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory" />
+                    <excludes>
+                        <exclude>**/*ITest.java</exclude>
+                        <exclude>**/*IT.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathLayoutType>custom</classpathLayoutType>
+							<customClasspathLayout>${artifact.artifactId}.${artifact.extension}</customClasspathLayout>
+						</manifest>
+						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+			
+			  <!-- Configure the jar with the sources. -->
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <includePom>true</includePom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Configure the jar with the javadoc. -->
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <quiet>true</quiet>
+                    <detectOfflineLinks>false</detectOfflineLinks>
+                    <additionalparam>-Xdoclint:none</additionalparam>
+                    <notimestamp>true</notimestamp>
+                    <splitindex>true</splitindex>
+                    <doctitle>OmniConcurrent for GlassFish</doctitle>
+                    <links>
+                        <link>https://jakarta.ee/specifications/platform/9.1/apidocs/</link>
+                    </links>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+			<plugin>
+				<groupId>org.glassfish.hk2</groupId>
+				<artifactId>osgiversion-maven-plugin</artifactId>
+				<!-- Since we don't want qualifier like b05 or SNAPSHOT to appear in 
+					package version attribute, we use the following goal to populate a project 
+					property with an OSGi version which is equivalent to maven version without 
+					qualifier and then use that property in osgi.bundle while exporting. -->
+				<configuration>
+					<dropVersionComponent>qualifier</dropVersionComponent>
+					<versionPropertyName>project.osgi.version</versionPropertyName>
+				</configuration>
+			</plugin>
+			
+			<!-- Configure snapshot deployment to Sonatype. -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.glassfish.hk2</groupId>
+			<artifactId>hk2</artifactId>
+			<version>3.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.main.hk2</groupId>
+			<artifactId>hk2-config</artifactId>
+			<version>${glassfish.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.main.hk2</groupId>
+			<artifactId>config-types</artifactId>
+			<version>${glassfish.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.main.admin</groupId>
+			<artifactId>config-api</artifactId>
+			<version>${glassfish.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.main.admin</groupId>
+			<artifactId>admin-util</artifactId>
+			<version>${glassfish.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.main.common</groupId>
+			<artifactId>glassfish-api</artifactId>
+			<version>${glassfish.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.main.resourcebase.resources</groupId>
+			<artifactId>nucleus-resources</artifactId>
+			<version>${glassfish.version}</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+	</dependencies>
+	
+	<!-- Release deploy: mvn clean deploy -P release -->
+    <profiles>
+        <profile>
+            <id>release</id>
+            <properties>
+                <docs.phase>package</docs.phase>
+            </properties>
+            <build>
+                <plugins>
+                    <!-- Signing with GPG is a requirement for a release deployment to Maven central. -->
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${version.maven.gpg.plugin}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
