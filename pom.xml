@@ -542,15 +542,12 @@
     <profiles>
         <profile>
             <id>release</id>
-            <properties>
-                <docs.phase>package</docs.phase>
-            </properties>
             <build>
                 <plugins>
                     <!-- Signing with GPG is a requirement for a release deployment to Maven central. -->
                     <plugin>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>${version.maven.gpg.plugin}</version>
+                        <version>3.0.1</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
