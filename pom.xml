@@ -431,7 +431,6 @@
                 <executions>
                     <execution>
                         <id>attach-sources</id>
-                        <phase>package</phase>
                         <goals>
                             <goal>jar-no-fork</goal>
                         </goals>
@@ -456,7 +455,6 @@
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
-                        <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
                         </goals>
@@ -481,7 +479,7 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.8</version>
+                <version>1.6.13</version>
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>ossrh</serverId>
