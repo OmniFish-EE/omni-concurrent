@@ -43,8 +43,8 @@ import static org.glassfish.deployment.common.JavaEEResourceType.MSEDD;
 
 import java.util.Properties;
 
-import com.sun.enterprise.deployment.ResourceDescriptor;
-import com.sun.enterprise.deployment.ResourcePropertyDescriptor;
+import com.sun.enterprise.deployment.core.ResourceDescriptor;
+import com.sun.enterprise.deployment.core.ResourcePropertyDescriptor;
 
 public class ManagedScheduledExecutorDefinitionDescriptor extends ResourceDescriptor {
 

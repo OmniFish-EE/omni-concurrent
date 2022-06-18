@@ -37,55 +37,53 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
+// Portions Copyright [2022] [OmniFaces and/or its affiliates]
 package org.omnifaces.concurrent.node;
+
+import static org.omnifaces.concurrent.node.NodeUtils.appendChild;
+import static org.omnifaces.concurrent.node.NodeUtils.appendTextChild;
+
 import java.util.Map;
 
 import org.omnifaces.concurrent.deployment.ConcurrencyConstants;
-import org.omnifaces.concurrent.deployment.ManagedThreadFactoryDefinitionDescriptor;
+import org.omnifaces.concurrent.deployment.ManagedExecutorDefinitionDescriptor;
 import org.w3c.dom.Node;
 
-import com.sun.enterprise.deployment.node.DeploymentDescriptorNode;
-import com.sun.enterprise.deployment.node.ResourcePropertyNode;
-import com.sun.enterprise.deployment.node.XMLElement;
-import com.sun.enterprise.deployment.xml.TagNames;
+public class ManagedExecutorDefinitionNodeDelegate {
 
-public class ManagedThreadFactoryDefinitionNode extends DeploymentDescriptorNode<ManagedThreadFactoryDefinitionDescriptor> {
+    ManagedExecutorDefinitionDescriptor descriptor = null;
 
-    public final static XMLElement tag = new XMLElement(ConcurrencyConstants.MANAGED_THREAD_FACTORY);
-
-    ManagedThreadFactoryDefinitionDescriptor descriptor = null;
-
-    public ManagedThreadFactoryDefinitionNode() {
-        registerElementHandler(new XMLElement(TagNames.RESOURCE_PROPERTY),
-                ResourcePropertyNode.class, "addManagedThreadFactoryPropertyDescriptor");
+    public static String getQname() {
+        return ConcurrencyConstants.MANAGED_EXECUTOR;
     }
 
-    @Override
-    protected Map getDispatchTable() {
-        Map table = super.getDispatchTable();
-        table.put(ConcurrencyConstants.MANAGED_THREAD_FACTORY_NAME, "setName");
-        table.put(ConcurrencyConstants.MANAGED_THREAD_FACTORY_CONTEXT_SERVICE_REF, "setContext");
-        table.put(ConcurrencyConstants.MANAGED_THREAD_FACTORY_PRIORITY, "setPriority");
+    public String getHandlerAdMethodName() {
+        return "addManagedExecutorPropertyDescriptor";
+    }
+
+    public Map<String, String> getDispatchTable(Map<String, String> table) {
+        table.put(ConcurrencyConstants.MANAGED_EXECUTOR_NAME, "setName");
+        table.put(ConcurrencyConstants.MANAGED_EXECUTOR_MAX_ASYNC, "setMaximumPoolSize");
+        table.put(ConcurrencyConstants.MANAGED_EXECUTOR_HUNG_TASK_THRESHOLD, "setHungAfterSeconds");
+        table.put(ConcurrencyConstants.MANAGED_EXECUTOR_CONTEXT_SERVICE_REF, "setContext");
         return table;
     }
 
-    @Override
-    public Node writeDescriptor(Node parent, String nodeName,
-                                ManagedThreadFactoryDefinitionDescriptor managedThreadFactoryDefinitionDescriptor) {
+    public Node getDescriptor(Node parent, String nodeName, ManagedExecutorDefinitionDescriptor managedExecutorDefinitionDescriptor) {
         Node node = appendChild(parent, nodeName);
-        appendTextChild(node, ConcurrencyConstants.MANAGED_EXECUTOR_NAME, managedThreadFactoryDefinitionDescriptor.getName());
-        appendTextChild(node, ConcurrencyConstants.MANAGED_THREAD_FACTORY_CONTEXT_SERVICE_REF, managedThreadFactoryDefinitionDescriptor.getContext());
-        appendTextChild(node, ConcurrencyConstants.MANAGED_THREAD_FACTORY_PRIORITY, String.valueOf(managedThreadFactoryDefinitionDescriptor.getPriority()));
-        ResourcePropertyNode propertyNode = new ResourcePropertyNode();
-        propertyNode.writeDescriptor(node, managedThreadFactoryDefinitionDescriptor);
+        appendTextChild(node, ConcurrencyConstants.MANAGED_EXECUTOR_NAME, managedExecutorDefinitionDescriptor.getName());
+        appendTextChild(node, ConcurrencyConstants.MANAGED_EXECUTOR_MAX_ASYNC, String.valueOf(managedExecutorDefinitionDescriptor.getMaximumPoolSize()));
+        appendTextChild(node, ConcurrencyConstants.MANAGED_EXECUTOR_HUNG_TASK_THRESHOLD, String.valueOf(managedExecutorDefinitionDescriptor.getHungAfterSeconds()));
+        appendTextChild(node, ConcurrencyConstants.MANAGED_EXECUTOR_CONTEXT_SERVICE_REF, managedExecutorDefinitionDescriptor.getContext());
         return node;
     }
 
-    @Override
-    public ManagedThreadFactoryDefinitionDescriptor getDescriptor() {
+    public ManagedExecutorDefinitionDescriptor getDescriptor() {
         if (descriptor == null) {
-            descriptor = new ManagedThreadFactoryDefinitionDescriptor();
+            descriptor = new ManagedExecutorDefinitionDescriptor();
         }
+
         return descriptor;
     }
+
 }

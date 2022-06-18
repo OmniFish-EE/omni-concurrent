@@ -37,58 +37,66 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
+// Portions Copyright [2022] [OmniFaces and/or its affiliates]
 package org.omnifaces.concurrent.node;
+
+import static org.omnifaces.concurrent.deployment.ConcurrencyConstants.CONTEXT_SERVICE_CLEARED;
+import static org.omnifaces.concurrent.deployment.ConcurrencyConstants.CONTEXT_SERVICE_NAME;
+import static org.omnifaces.concurrent.deployment.ConcurrencyConstants.CONTEXT_SERVICE_PROPAGATED;
+import static org.omnifaces.concurrent.deployment.ConcurrencyConstants.CONTEXT_SERVICE_UNCHANGED;
+import static org.omnifaces.concurrent.node.NodeUtils.appendChild;
+import static org.omnifaces.concurrent.node.NodeUtils.appendTextChild;
 
 import java.util.Map;
 
 import org.omnifaces.concurrent.deployment.ConcurrencyConstants;
-import org.omnifaces.concurrent.deployment.ManagedExecutorDefinitionDescriptor;
+import org.omnifaces.concurrent.deployment.ContextServiceDefinitionDescriptor;
 import org.w3c.dom.Node;
 
-import com.sun.enterprise.deployment.node.DeploymentDescriptorNode;
-import com.sun.enterprise.deployment.node.ResourcePropertyNode;
-import com.sun.enterprise.deployment.node.XMLElement;
-import com.sun.enterprise.deployment.xml.TagNames;
+public class ContextServiceDefinitionNodeDelegate {
 
-public class ManagedExecutorDefinitionNode extends DeploymentDescriptorNode<ManagedExecutorDefinitionDescriptor> {
+    ContextServiceDefinitionDescriptor descriptor = null;
 
-    public final static XMLElement tag = new XMLElement(ConcurrencyConstants.MANAGED_EXECUTOR);
-
-    ManagedExecutorDefinitionDescriptor descriptor = null;
-
-    public ManagedExecutorDefinitionNode() {
-        registerElementHandler(new XMLElement(TagNames.RESOURCE_PROPERTY), ResourcePropertyNode.class,
-                "addManagedExecutorPropertyDescriptor");
+    public static String getQname() {
+        return ConcurrencyConstants.CONTEXT_SERVICE;
     }
 
-    @Override
-    protected Map getDispatchTable() {
-        Map table = super.getDispatchTable();
-        table.put(ConcurrencyConstants.MANAGED_EXECUTOR_NAME, "setName");
-        table.put(ConcurrencyConstants.MANAGED_EXECUTOR_MAX_ASYNC, "setMaximumPoolSize");
-        table.put(ConcurrencyConstants.MANAGED_EXECUTOR_HUNG_TASK_THRESHOLD, "setHungAfterSeconds");
-        table.put(ConcurrencyConstants.MANAGED_EXECUTOR_CONTEXT_SERVICE_REF, "setContext");
+    public String getHandlerAdMethodName() {
+        return "addContextServiceExecutorDescriptor";
+    }
+
+    public Map<String, String> getDispatchTable(Map<String, String> table) {
+        table.put(CONTEXT_SERVICE_NAME, "setName");
+        table.put(CONTEXT_SERVICE_PROPAGATED, "addPropagated");
+        table.put(CONTEXT_SERVICE_CLEARED, "addCleared");
+        table.put(CONTEXT_SERVICE_UNCHANGED, "addUnchanged");
         return table;
     }
 
-    @Override
-    public Node writeDescriptor(Node parent, String nodeName, ManagedExecutorDefinitionDescriptor managedExecutorDefinitionDescriptor) {
+    public Node getDescriptor(Node parent, String nodeName, ContextServiceDefinitionDescriptor contextServiceDefinitionDescriptor) {
         Node node = appendChild(parent, nodeName);
-        appendTextChild(node, ConcurrencyConstants.MANAGED_EXECUTOR_NAME, managedExecutorDefinitionDescriptor.getName());
-        appendTextChild(node, ConcurrencyConstants.MANAGED_EXECUTOR_MAX_ASYNC, String.valueOf(managedExecutorDefinitionDescriptor.getMaximumPoolSize()));
-        appendTextChild(node, ConcurrencyConstants.MANAGED_EXECUTOR_HUNG_TASK_THRESHOLD, String.valueOf(managedExecutorDefinitionDescriptor.getHungAfterSeconds()));
-        appendTextChild(node, ConcurrencyConstants.MANAGED_EXECUTOR_CONTEXT_SERVICE_REF, managedExecutorDefinitionDescriptor.getContext());
-        ResourcePropertyNode propertyNode = new ResourcePropertyNode();
-        propertyNode.writeDescriptor(node, managedExecutorDefinitionDescriptor);
+
+        appendTextChild(node, CONTEXT_SERVICE_NAME, contextServiceDefinitionDescriptor.getName());
+        for (String s : contextServiceDefinitionDescriptor.getCleared()) {
+            appendTextChild(node, CONTEXT_SERVICE_CLEARED, s);
+        }
+
+        for (String s : contextServiceDefinitionDescriptor.getPropagated()) {
+            appendTextChild(node, CONTEXT_SERVICE_PROPAGATED, s);
+        }
+
+        for (String s : contextServiceDefinitionDescriptor.getUnchanged()) {
+            appendTextChild(node, CONTEXT_SERVICE_UNCHANGED, s);
+        }
+
         return node;
     }
 
-    @Override
-    public ManagedExecutorDefinitionDescriptor getDescriptor() {
+    public ContextServiceDefinitionDescriptor getDescriptor() {
         if (descriptor == null) {
-            descriptor = new ManagedExecutorDefinitionDescriptor();
+            descriptor = new ContextServiceDefinitionDescriptor();
         }
+
         return descriptor;
     }
-
 }

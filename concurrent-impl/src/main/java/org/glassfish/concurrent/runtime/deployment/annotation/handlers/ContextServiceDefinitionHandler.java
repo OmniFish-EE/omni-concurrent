@@ -55,9 +55,9 @@ import org.jvnet.hk2.annotations.Service;
 import org.omnifaces.concurrent.deployment.ContextServiceDefinitionDescriptor;
 
 import com.sun.enterprise.config.serverbeans.Domain;
-import com.sun.enterprise.deployment.ResourceDescriptor;
 import com.sun.enterprise.deployment.annotation.context.ResourceContainerContext;
 import com.sun.enterprise.deployment.annotation.handlers.AbstractResourceHandler;
+import com.sun.enterprise.deployment.core.ResourceDescriptor;
 
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.inject.Inject;

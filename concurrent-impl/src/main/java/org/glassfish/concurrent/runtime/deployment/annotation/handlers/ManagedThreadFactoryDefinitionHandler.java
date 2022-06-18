@@ -52,10 +52,10 @@ import org.glassfish.deployment.common.JavaEEResourceType;
 import org.jvnet.hk2.annotations.Service;
 import org.omnifaces.concurrent.deployment.ManagedThreadFactoryDefinitionDescriptor;
 
-import com.sun.enterprise.deployment.MetadataSource;
-import com.sun.enterprise.deployment.ResourceDescriptor;
 import com.sun.enterprise.deployment.annotation.context.ResourceContainerContext;
 import com.sun.enterprise.deployment.annotation.handlers.AbstractResourceHandler;
+import com.sun.enterprise.deployment.core.MetadataSource;
+import com.sun.enterprise.deployment.core.ResourceDescriptor;
 
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 

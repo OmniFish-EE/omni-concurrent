@@ -37,62 +37,57 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
+// Portions Copyright [2022] [OmniFaces and/or its affiliates]
 package org.omnifaces.concurrent.node;
+
+import static org.omnifaces.concurrent.deployment.ConcurrencyConstants.MANAGED_SCHEDULED_EXECUTOR;
+import static org.omnifaces.concurrent.deployment.ConcurrencyConstants.MANAGED_SCHEDULED_EXECUTOR_CONTEXT_SERVICE_REF;
+import static org.omnifaces.concurrent.deployment.ConcurrencyConstants.MANAGED_SCHEDULED_EXECUTOR_HUNG_TASK_THRESHOLD;
+import static org.omnifaces.concurrent.deployment.ConcurrencyConstants.MANAGED_SCHEDULED_EXECUTOR_MAX_ASYNC;
+import static org.omnifaces.concurrent.deployment.ConcurrencyConstants.MANAGED_SCHEDULED_EXECUTOR_NAME;
+import static org.omnifaces.concurrent.node.NodeUtils.appendChild;
+import static org.omnifaces.concurrent.node.NodeUtils.appendTextChild;
 
 import java.util.Map;
 
-import org.omnifaces.concurrent.deployment.ConcurrencyConstants;
 import org.omnifaces.concurrent.deployment.ManagedScheduledExecutorDefinitionDescriptor;
 import org.w3c.dom.Node;
 
-import com.sun.enterprise.deployment.node.DeploymentDescriptorNode;
-import com.sun.enterprise.deployment.node.ResourcePropertyNode;
-import com.sun.enterprise.deployment.node.XMLElement;
-import com.sun.enterprise.deployment.xml.TagNames;
-
-public class ManagedScheduledExecutorDefinitionNode extends DeploymentDescriptorNode<ManagedScheduledExecutorDefinitionDescriptor> {
-
-    public final static XMLElement tag = new XMLElement(ConcurrencyConstants.MANAGED_SCHEDULED_EXECUTOR);
+public class ManagedScheduledExecutorDefinitionNodeDelegate {
 
     ManagedScheduledExecutorDefinitionDescriptor descriptor = null;
 
-    public ManagedScheduledExecutorDefinitionNode() {
-        registerElementHandler(new XMLElement(TagNames.RESOURCE_PROPERTY), ResourcePropertyNode.class,
-                "addManagedScheduledExecutorDefinitionDescriptor");
+    public static String getQname() {
+        return MANAGED_SCHEDULED_EXECUTOR;
     }
 
-    @Override
-    protected Map getDispatchTable() {
-        Map table = super.getDispatchTable();
-        table.put(ConcurrencyConstants.MANAGED_SCHEDULED_EXECUTOR_NAME, "setName");
-        table.put(ConcurrencyConstants.MANAGED_SCHEDULED_EXECUTOR_MAX_ASYNC, "setMaxAsync");
-        table.put(ConcurrencyConstants.MANAGED_SCHEDULED_EXECUTOR_CONTEXT_SERVICE_REF, "setContext");
-        table.put(ConcurrencyConstants.MANAGED_SCHEDULED_EXECUTOR_HUNG_TASK_THRESHOLD, "setHungTaskThreshold");
+    public String getHandlerAdMethodName() {
+        return "addManagedScheduledExecutorDefinitionDescriptor";
+    }
+
+    public Map<String, String> getDispatchTable(Map<String, String> table) {
+        table.put(MANAGED_SCHEDULED_EXECUTOR_NAME, "setName");
+        table.put(MANAGED_SCHEDULED_EXECUTOR_MAX_ASYNC, "setMaxAsync");
+        table.put(MANAGED_SCHEDULED_EXECUTOR_CONTEXT_SERVICE_REF, "setContext");
+        table.put(MANAGED_SCHEDULED_EXECUTOR_HUNG_TASK_THRESHOLD, "setHungTaskThreshold");
         return table;
     }
 
-    @Override
-    public Node writeDescriptor(Node parent, String nodeName,
-                                ManagedScheduledExecutorDefinitionDescriptor managedScheduledExecutorDefinitionDescriptor) {
+    public Node getDescriptor(Node parent, String nodeName, ManagedScheduledExecutorDefinitionDescriptor managedScheduledExecutorDefinitionDescriptor) {
         Node node = appendChild(parent, nodeName);
-        appendTextChild(node, ConcurrencyConstants.MANAGED_SCHEDULED_EXECUTOR_NAME,
-                managedScheduledExecutorDefinitionDescriptor.getName());
-        appendTextChild(node, ConcurrencyConstants.MANAGED_SCHEDULED_EXECUTOR_MAX_ASYNC,
-                managedScheduledExecutorDefinitionDescriptor.getMaxAsync());
-        appendTextChild(node, ConcurrencyConstants.MANAGED_SCHEDULED_EXECUTOR_CONTEXT_SERVICE_REF,
-                managedScheduledExecutorDefinitionDescriptor.getContext());
-        appendTextChild(node, ConcurrencyConstants.MANAGED_SCHEDULED_EXECUTOR_HUNG_TASK_THRESHOLD,
-                String.valueOf(managedScheduledExecutorDefinitionDescriptor.getHungTaskThreshold()));
-        ResourcePropertyNode propertyNode = new ResourcePropertyNode();
-        propertyNode.writeDescriptor(node, managedScheduledExecutorDefinitionDescriptor);
+        appendTextChild(node, MANAGED_SCHEDULED_EXECUTOR_NAME, managedScheduledExecutorDefinitionDescriptor.getName());
+        appendTextChild(node, MANAGED_SCHEDULED_EXECUTOR_MAX_ASYNC, managedScheduledExecutorDefinitionDescriptor.getMaxAsync());
+        appendTextChild(node, MANAGED_SCHEDULED_EXECUTOR_CONTEXT_SERVICE_REF, managedScheduledExecutorDefinitionDescriptor.getContext());
+        appendTextChild(node, MANAGED_SCHEDULED_EXECUTOR_HUNG_TASK_THRESHOLD, String.valueOf(managedScheduledExecutorDefinitionDescriptor.getHungTaskThreshold()));
+
         return node;
     }
 
-    @Override
     public ManagedScheduledExecutorDefinitionDescriptor getDescriptor() {
         if (descriptor == null) {
             descriptor = new ManagedScheduledExecutorDefinitionDescriptor();
         }
+
         return descriptor;
     }
 }

@@ -45,8 +45,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import com.sun.enterprise.deployment.ResourceDescriptor;
-import com.sun.enterprise.deployment.ResourcePropertyDescriptor;
+import com.sun.enterprise.deployment.core.ResourceDescriptor;
+import com.sun.enterprise.deployment.core.ResourcePropertyDescriptor;
 
 /**
  * Deployment information for context service.
