@@ -41,25 +41,6 @@
 
 package org.glassfish.concurrent.runtime;
 
-import com.sun.enterprise.config.serverbeans.Applications;
-import com.sun.enterprise.container.common.spi.util.ComponentEnvManager;
-import com.sun.enterprise.transaction.api.JavaEETransactionManager;
-import com.sun.enterprise.util.Utility;
-import org.glassfish.api.invocation.InvocationManager;
-import org.glassfish.concurrent.LogFacade;
-import org.glassfish.concurrent.runtime.deployer.ContextServiceConfig;
-import org.glassfish.concurrent.runtime.deployer.ManagedExecutorServiceConfig;
-import org.glassfish.concurrent.runtime.deployer.ManagedScheduledExecutorServiceConfig;
-import org.glassfish.concurrent.runtime.deployer.ManagedThreadFactoryConfig;
-import org.glassfish.hk2.api.PostConstruct;
-import org.glassfish.hk2.api.PreDestroy;
-import org.glassfish.internal.data.ApplicationRegistry;
-import org.glassfish.internal.deployment.Deployment;
-import org.glassfish.resourcebase.resources.api.ResourceInfo;
-import org.jvnet.hk2.annotations.Service;
-
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -70,7 +51,15 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.naming.NamingException;
+
+import org.glassfish.api.invocation.InvocationManager;
+import org.glassfish.concurrent.LogFacade;
+import org.glassfish.concurrent.runtime.deployer.ContextServiceConfig;
+import org.glassfish.concurrent.runtime.deployer.ManagedExecutorServiceConfig;
+import org.glassfish.concurrent.runtime.deployer.ManagedScheduledExecutorServiceConfig;
+import org.glassfish.concurrent.runtime.deployer.ManagedThreadFactoryConfig;
 import org.glassfish.enterprise.concurrent.AbstractManagedExecutorService;
 import org.glassfish.enterprise.concurrent.AbstractManagedThread;
 import org.glassfish.enterprise.concurrent.ContextServiceImpl;
@@ -78,7 +67,22 @@ import org.glassfish.enterprise.concurrent.ManagedExecutorServiceImpl;
 import org.glassfish.enterprise.concurrent.ManagedScheduledExecutorServiceImpl;
 import org.glassfish.enterprise.concurrent.ManagedThreadFactoryImpl;
 import org.glassfish.enterprise.concurrent.spi.ContextHandle;
+import org.glassfish.hk2.api.PostConstruct;
+import org.glassfish.hk2.api.PreDestroy;
+import org.glassfish.internal.api.Globals;
+import org.glassfish.internal.data.ApplicationRegistry;
+import org.glassfish.internal.deployment.Deployment;
+import org.glassfish.resourcebase.resources.api.ResourceInfo;
 import org.glassfish.resourcebase.resources.naming.ResourceNamingService;
+import org.jvnet.hk2.annotations.Service;
+
+import com.sun.enterprise.config.serverbeans.Applications;
+import com.sun.enterprise.container.common.spi.util.ComponentEnvManager;
+import com.sun.enterprise.transaction.api.JavaEETransactionManager;
+import com.sun.enterprise.util.Utility;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 /**
  * This class provides API to create various Concurrency Utilities objects
@@ -135,7 +139,10 @@ public class ConcurrentRuntime implements PostConstruct, PreDestroy {
      */
     public static ConcurrentRuntime getRuntime() {
         if (_runtime == null) {
-            throw new RuntimeException("ConcurrentRuntime not initialized");
+            _runtime = Globals.get(ConcurrentRuntime.class);
+            if (_runtime == null) {
+                throw new RuntimeException("ConcurrentRuntime not initialized");
+            }
         }
         return _runtime;
     }
@@ -237,7 +244,7 @@ public class ConcurrentRuntime implements PostConstruct, PreDestroy {
                 config.getMaximumPoolSize(),
                 config.getKeepAliveSeconds(), TimeUnit.SECONDS,
                 config.getThreadLifeTimeSeconds(),
-                config.getTaskQueueCapacity(), 
+                config.getTaskQueueCapacity(),
                 contextService,
                 AbstractManagedExecutorService.RejectPolicy.ABORT);
 
@@ -420,7 +427,7 @@ public class ConcurrentRuntime implements PostConstruct, PreDestroy {
      * @return JNDI name for the context service to be stored in the JNDI tree.
      */
     public static String createContextServiceName(String configuredContextJndiName, String parentObjectJndiName) {
-        String contextServiceJndiName = configuredContextJndiName; 
+        String contextServiceJndiName = configuredContextJndiName;
         if (contextServiceJndiName == null) {
             contextServiceJndiName = parentObjectJndiName + "-contextservice";
         }
@@ -473,6 +480,7 @@ public class ConcurrentRuntime implements PostConstruct, PreDestroy {
 
     class HungTasksLogger implements Runnable {
 
+        @Override
         public void run() {
             ArrayList<ManagedExecutorServiceImpl> executorServices = new ArrayList();
             ArrayList<ManagedScheduledExecutorServiceImpl> scheduledExecutorServices = new ArrayList();
