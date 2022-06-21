@@ -52,6 +52,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.glassfish.api.invocation.InvocationManager;
@@ -360,6 +361,7 @@ public class ConcurrentRuntime implements PostConstruct, PreDestroy {
     private ContextServiceImpl prepareContextService(String contextServiceJndiName, String contextInfo, boolean contextInfoEnabled, boolean cleanupTransaction) {
         ContextServiceImpl contextService = contextServiceMap.get(contextServiceJndiName);
         if (contextService == null) {
+
             // if the context service is not known, create it
             Set<String> propagated = ContextServiceConfig.parseContextInfo(contextInfo, contextInfoEnabled);
             Set<String> cleared = Collections.EMPTY_SET;
@@ -443,7 +445,15 @@ public class ConcurrentRuntime implements PostConstruct, PreDestroy {
         try {
             contextService = (ContextServiceImpl) resourceNamingService.lookup(contextResourceInfo, contextOfResource);
         } catch (NamingException e) {
-            // not found, create a default one
+
+            // Try request context service from the initial context to trigger deployment if needed.
+            try {
+                return InitialContext.doLookup(configuredContextJndiName);
+            } catch (Throwable t) {
+
+            }
+
+            // Still not found, create a default one
             contextService = prepareContextService(contextOfResource, CONTEXT_INFO_ALL, true, true);
         }
         return contextService;
