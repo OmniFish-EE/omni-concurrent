@@ -46,7 +46,7 @@
 
 	<groupId>org.omnifaces</groupId>
 	<artifactId>omniconcurrent-parent</artifactId>
-	<version>3.0.0-RC3</version>
+	<version>3.0.0-RC4</version>
 	<packaging>pom</packaging>
 
 	<name>OmniConcurrent Parent</name>
