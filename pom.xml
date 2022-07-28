@@ -46,7 +46,7 @@
 
 	<groupId>org.omnifaces</groupId>
 	<artifactId>omniconcurrent-parent</artifactId>
-	<version>3.0.0-RC4</version>
+	<version>3.0.0-RC5</version>
 	<packaging>pom</packaging>
 
 	<name>OmniConcurrent Parent</name>
@@ -380,7 +380,7 @@
 			<plugin>
                 <groupId>org.glassfish.build</groupId>
                 <artifactId>command-security-maven-plugin</artifactId>
-                <version>1.0.14</version>
+                <version>1.0.15</version>
                 <configuration>
                     <isFailureFatal>false</isFailureFatal>
                 </configuration>
@@ -417,7 +417,7 @@
 			
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M6</version>
+                <version>3.0.0-M7</version>
                 <configuration>
                     <argLine>${surefire.argLine}</argLine>
                     <trimStackTrace>false</trimStackTrace>
