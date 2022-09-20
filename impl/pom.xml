@@ -61,7 +61,7 @@
         <dependency>
             <groupId>jakarta.enterprise.concurrent</groupId>
             <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-            <version>3.0.1</version>
+            <version>3.0.2</version>
        </dependency>
        <!-- Jakarta Concurrency implementation (generic part) -->
        <dependency>
