@@ -45,12 +45,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.omnifaces</groupId>
+        <groupId>ee.omnifish.omniconcurrent</groupId>
         <artifactId>omniconcurrent-parent</artifactId>
         <version>3.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>concurrent-extras</artifactId>
+    <artifactId>omniconcurrent-extras</artifactId>
     <packaging>glassfish-jar</packaging>
 
     <name>Concurrent Extras Module</name>
