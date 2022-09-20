@@ -1,0 +1,29 @@
+name: "Build"
+
+on:
+  push:
+    branches:
+      - main
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  openjdk:
+    strategy:
+      matrix:
+        jdk: [11-slim, 17-slim]
+    name: "OpenJDK ${{ matrix.jdk }}"
+    runs-on: ubuntu-latest
+    container: "ghcr.io/ghcri/maven:3.8-openjdk-${{ matrix.jdk }}"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ matrix.jdk }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-${{ matrix.jdk }}-
+      - name: 'Build'
+        run: mvn -B -V --no-transfer-progress clean verify -fae
