@@ -75,9 +75,9 @@
 	</developers>
 
     <modules>
-        <module>concurrent-extras</module>
-        <module>concurrent-connector</module>
-        <module>concurrent-impl</module>
+        <module>extras</module>
+        <module>connector</module>
+        <module>impl</module>
     </modules>
 
 	<scm>
