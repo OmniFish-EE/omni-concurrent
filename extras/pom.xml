@@ -45,20 +45,20 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.omnifaces</groupId>
+        <groupId>ee.omnifish.omniconcurrent</groupId>
         <artifactId>omniconcurrent-parent</artifactId>
         <version>3.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>concurrent-connector</artifactId>
+    <artifactId>omniconcurrent-extras</artifactId>
     <packaging>glassfish-jar</packaging>
 
-    <name>Concurrent Connector Module</name>
+    <name>Concurrent Extras Module</name>
 
     <dependencies>
-         <dependency>
-            <groupId>org.glassfish.main.admin</groupId>
-            <artifactId>config-api</artifactId>
+        <dependency>
+            <groupId>org.glassfish.main.deployment</groupId>
+            <artifactId>dol-core</artifactId>
             <version>${glassfish.version}</version>
         </dependency>
     </dependencies>
