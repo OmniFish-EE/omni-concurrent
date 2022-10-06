@@ -38,6 +38,12 @@
 # holder.
 #
 
--exportcontents: org.glassfish.concurrent.admin;\
-                 org.glassfish.concurrent.runtime;\
-                 org.glassfish.concurrent.runtime.deployer; version=${project.osgi.version}
+-exportcontents: \
+  ee.omnifish.concurrent.api;\
+  ee.omnifish.concurrent.data;\
+  ee.omnifish.concurrent.runtime;\
+  ee.omnifish.concurrent.deploy;\
+  version=${project.osgi.version}
+
+DynamicImport-Package: \
+   *; resolution:=optional
